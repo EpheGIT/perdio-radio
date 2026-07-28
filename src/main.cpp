@@ -1,43 +1,70 @@
 #include <Arduino.h>
-#include "BluetoothA2DPSink.h"
+#include <WiFi.h>
+#include "Audio.h"
 
-BluetoothA2DPSink a2dp_sink;
+#define I2S_BCLK 26
+#define I2S_LRC  25
+#define I2S_DOUT 22
 
-volatile uint32_t last_audio_ms = 0;   // when audio last arrived
-volatile uint32_t total_bytes = 0;
+Audio audio;
 
-// Fires only when real audio data streams in
-void audio_data_callback(const uint8_t *data, uint32_t len) {
-  last_audio_ms = millis();
-  total_bytes += len;
-}
+const char* ssid = "";
+const char* password = "";
+
+const char* stations[] = {
+  "http://ice1.somafm.com/groovesalad-64-aac",
+  "http://ice1.somafm.com/groovesalad-32-aac"
+};
+
+int current = 0;
+int volume = 12;
+char lastTitle[128] = "";
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Starting Bluetooth speaker...");
+  Serial.println("Starting internet radio...");
 
-  i2s_pin_config_t my_pins = {
-    .bck_io_num = 26,    // BCLK
-    .ws_io_num = 25,     // LRC
-    .data_out_num = 22,  // DIN
-    .data_in_num = I2S_PIN_NO_CHANGE
-  };
-  a2dp_sink.set_pin_config(my_pins);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  Serial.print("WiFi ok, IP ");
+  Serial.println(WiFi.localIP());
 
-  a2dp_sink.set_stream_reader(audio_data_callback, true);  // true = still play
-  a2dp_sink.start("Perdio Radio");
-
-  Serial.println("Ready. Look for 'Perdio Radio' on your phone Bluetooth.");
+  audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+  audio.setVolume(12);   // 0 to 21
+  audio.connecttohost(stations[0]);
 }
 
 void loop() {
-  bool playing = (millis() - last_audio_ms) < 500;  // audio in last half second?
+  audio.loop();
 
-  if (playing) {
-    Serial.printf("PLAYING - audio flowing, total %u bytes\n", total_bytes);
-  } else {
-    Serial.println("IDLE - connected but no audio (paused or stopped)");
+  if (Serial.available()) {
+    char c = Serial.read();
+
+    if (c == '1' || c == '2') {
+      current = c - '1';
+      audio.connecttohost(stations[current]);
+    }
+    else if (c == '+') {
+      volume = min(volume + 1, 21);
+      audio.setVolume(volume);
+      Serial.printf("volume %d\n", volume);
+    }
+    else if (c == '-') {
+      volume = max(volume - 1, 0);
+      audio.setVolume(volume);
+      Serial.printf("volume %d\n", volume);
+    }
   }
-
-  delay(1000);
+}
+void audio_info(const char *info) { Serial.printf("info: %s\n", info); }
+void audio_showstation(const char *s) { Serial.printf("station: %s\n", s); }
+void audio_showstreamtitle(const char *s) {
+  if (strcmp(lastTitle, s) != 0) {
+    strncpy(lastTitle, s, sizeof(lastTitle) - 1);
+    Serial.printf("title: %s\n", s);
+  }
 }
