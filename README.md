@@ -1,5 +1,7 @@
 # Perdio Radio
 
+> **Picking this up?** Start with [HANDOVER.md](HANDOVER.md) — written for someone with no programming background. Then [DEMO.md](DEMO.md) for running it.
+
 Restoring a donated vintage radio cabinet with an ESP32 inside, while keeping the original cabinet, speaker, knobs and dial. Part of my placement with Rebel Punkworx, a charity working in electronic waste repair and sustainability.
 
 The idea is "good repair": the radio should still look original, and the build should be something you can open up and fix later, not glued shut. The old electronics come out, an ESP32 goes in, and the radio gets a second life instead of going to the scrap heap.
