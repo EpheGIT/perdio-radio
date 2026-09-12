@@ -117,9 +117,10 @@ If you add a third station, change `const int stationCount = 2;` on line 33 to `
 **Left to do, in order**
 
 1. **The MW and LW keys.** Each key needs one pair of contacts on the brown wafer switch that touch when the key is down. I have not found them yet. Any electronics person with a multimeter on continuity mode can find them in ten minutes. Once found, they wire to GPIO32 and GPIO33 on the board, and the code change to read them is small.
-2. **Bluetooth has no key.** The front panel has MW, LW and ON/OFF. Your notes assign MW to internet radio and LW to MP3. Bluetooth is left over. Options: drop it, or make "no key pressed" mean Bluetooth. Your call.
-3. **A 1000µF capacitor across the 5V rail**, near the amplifiers. This is the fix for the restarting problem. One can be salvaged from the Intempo board.
-4. **Move it into the cabinet.** Female header strips so the boards plug in rather than solder down, stripboard for the shared signal wires, and a proper power socket on the back so nobody is pushing a USB plug into the dev board.
+2. **The tune dial.** Your sketch has six positions. Simplest way: fit a small 10k potentiometer on the dial shaft so it turns with the cord, read it on GPIO35 exactly like the volume pot, and split the range into six zones. Position 1 to 6 becomes station 1 to 6 or track 1 to 6. The dial pointer keeps moving as it always did. A rotary encoder is the alternative if the dial turns freely with no end stops.
+3. **Bluetooth has no key.** The front panel has MW, LW and ON/OFF. Your notes assign MW to internet radio and LW to MP3. Bluetooth is left over. Options: drop it, or make "no key pressed" mean Bluetooth. Your call.
+4. **A 1000µF capacitor across the 5V rail**, near the amplifiers. This is the fix for the restarting problem. One can be salvaged from the Intempo board.
+5. **Move it into the cabinet.** Female header strips so the boards plug in rather than solder down, stripboard for the shared signal wires, and a proper power socket on the back so nobody is pushing a USB plug into the dev board.
 
 ---
 
