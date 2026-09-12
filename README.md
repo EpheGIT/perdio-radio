@@ -6,7 +6,7 @@ Restoring a donated vintage radio cabinet with an ESP32 inside, while keeping th
 
 The idea is "good repair": the radio should still look original, and the build should be something you can open up and fix later, not glued shut. The old electronics come out, an ESP32 goes in, and the radio gets a second life instead of going to the scrap heap.
 
-**About the name.** The repo is called `perdio-radio` and the Bluetooth device shows up as "Perdio Radio" because a Perdio PR22 was the first cabinet planned. The build actually in progress is a **Philips R4400**. The PR22 comes later.
+**Which radio.** This build is the **Perdio**, identified earlier in the project as a PR22 — the name on the front badge. The repo and the Bluetooth device name "Perdio Radio" are named after it. The second donated set, an R4400, is a later build and will get its own record.
 
 ## What it does
 
